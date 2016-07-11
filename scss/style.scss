@@ -1,0 +1,146 @@
+@import 'resources';
+
+.posts-list{
+	margin: 0;
+	padding: 0;
+	.list__item, &.list{
+		border: none !important;
+	}
+	.item{
+		width: 100%;
+		background: #fff;
+		padding: 25px;
+		padding-bottom: 0;
+		&:not(:last-child) .middle{
+			border-bottom: 1px solid #DDECF1;
+		}
+		.top{
+			overflow: hidden;
+			font-size: 12px;
+			margin-bottom: 20px;
+			i{
+				margin-right: 5px;
+			}
+			.featured{
+				float: left;
+				font-weight: 700;
+				color: #F5A625;
+			}
+			.publish-date{
+				float: right;
+				color: #BABAC4;
+			}
+		}
+		.middle{
+			overflow: hidden;
+			@include center-items;
+			padding-bottom: 20px;
+			.type-title{
+				float: left;
+				width: 50%;
+				.type, .title, .author{
+					margin: 0;
+				}
+				.type{
+					color: #CBDDE1;
+					font-size: 14px;
+					letter-spacing: 5px;
+					margin-bottom: 10px;
+					text-transform: uppercase;
+				}
+				.title{
+					color: #4F4E5C;
+					font-size: 23.5px;
+					font-weight: 700;
+					margin-bottom: 10px;
+					text-transform: capitalize;
+				}
+				.author{
+					font-size: 12px;
+					color: #9C9C9C;
+					letter-spacing: 1px;
+				}
+			}
+			.options{
+				width: 50%;
+				float: right;
+				.buttons{
+					float: right;
+				}
+				button{
+					cursor: pointer;
+					padding: 12.5px 40px;
+					color: white;
+					border-radius: 4px;
+					font-size: 12px;
+					font-weight: 700;
+					transition: 0.3s background;
+					&:not(:last-child){
+						margin-right: 10px;
+					}
+					&.archive{
+						background: #CBDDE1;
+						&:hover{
+							background: #B0C8CD; 
+						}
+					}
+					&.edit{
+						background: #B9E986;
+						&:hover{
+							background: #A4D76E;
+						}
+					}
+					&.trash{
+						padding: 15px;
+						background: #EB657D;
+						&:hover{
+							background: #D4435D;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media only screen and (max-width : 992px) {
+	.posts-list{
+		.middle{
+			display: block !important;
+		}
+		.type-title, .options{
+			float: left !important;
+			width: 100% !important;
+		}
+		.options{
+			margin-top: 10px !important;
+			.buttons{
+				float: left !important;
+			}
+			button{
+				padding: 15px 20px !important;
+			}
+		}
+	}
+}
+
+@media only screen and (max-width : 320px) {
+	.posts-list{
+		.middle{
+			display: block !important;
+		}
+		.type-title, .options{
+			float: left !important;
+			width: 100% !important;
+		}
+		.options{
+			margin-top: 10px !important;
+			.buttons{
+				float: left !important;
+			}
+			button{
+				padding: 15px !important;
+			}
+		}
+	}
+}

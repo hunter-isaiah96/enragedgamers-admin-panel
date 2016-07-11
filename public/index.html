@@ -1,0 +1,45 @@
+<html>
+	<head>
+	<base href="/"/>
+		<script type="text/javascript" src="https://use.fontawesome.com/e6415110e2.js"></script>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" />
+		<link rel="stylesheet" href="/bower_components/OnsenUI/css/onsenui.css"/>
+    	<link rel="stylesheet" href="/bower_components/OnsenUI/css/onsen-css-components.css"/>
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	</head>
+	<body ng-app="EGAP" ng-controller="MainController">
+		<div class="sidebar">
+			<header>ADMIN</header>
+			<div class="search-wrapper">
+				<label class="search">
+					<input type="text" placeholder="Search">
+					<i class="fa fa-search"></i>
+				</label>
+			</div>
+			<ul class="navigation">
+				<li ng-repeat="nav_item in navigation" ng-class="{'open': nav_item.open == true, 'selected': inState($root.state.current.name, nav_item.sub)}">
+					<div class="trigger" ng-click="nav_item.open = !nav_item.open"><i class="fa {{nav_item.icon}}"></i><span>{{nav_item.title}}</span><i class="fa fa-angle-right"></i></div>
+					<ul ng-if="nav_item.sub.length != 0">
+						<li ng-repeat="nav_sub in nav_item.sub" ng-class="{'selected': $root.state.current.name == nav_sub.state}" ng-click="goToState(nav_sub.state);">{{nav_sub.title}}</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+		<div class="content-wrapper">
+			<div class="content" ng-class="{'open': menuOpen}">
+				<div class="menu-header">
+					<i class="fa fa-bars menu-button" ng-click="menuOpen = !menuOpen"></i>
+					<span class="directory">{{$root.state.current.name}}</span>
+				</div>
+				<ui-view class="main-content"></ui-view>
+			</div>
+		</div>
+		<script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
+		<script type="text/javascript" src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+		<script src="/bower_components/OnsenUI/js/onsenui.js"></script>
+    	<!-- <script src="/bower_components/OnsenUI/js/angular-onsenui.js"></script> -->
+		<script type="text/javascript" src="/javascripts/app.js"></script>
+		<script type="text/javascript" src="/javascripts/services.js"></script>
+	</body>
+</html>

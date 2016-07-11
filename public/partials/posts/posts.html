@@ -1,0 +1,44 @@
+<ul class="posts-list">
+	<li class="approved item" ng-repeat="post_item in posts">
+		<div class="top">
+			<span class="featured"><i class="fa fa-star"></i> Marked as Featured</span>
+			<span class="publish-date"><i class="fa fa-clock-o"></i> Publish 10 days ago</span>
+		</div>
+		<div class="middle">
+			<div class="type-title">
+				<p class="type">{{post_item.type}}</p>
+				<p class="title">{{post_item.title}}</p>
+				<p class="author">Written by {{post_item.author}}</p>
+			</div>
+			<div class="options">
+				<div class="buttons">
+					<button class="archive">Archive Post</button>
+					<button class="edit">Edit Post</button>
+					<button class="trash"><i class="fa fa-trash"></i></button>
+				</div>
+			</div>
+		</div>
+	</li>
+</ul>
+<!-- <ons-list class="posts-list">
+	<ons-list-item class="approved item" ng-repeat="post_item in posts">
+		<div class="top">
+			<span class="featured"><i class="fa fa-star"></i> Marked as Featured</span>
+			<span class="publish-date"><i class="fa fa-clock-o"></i> Publish 10 days ago</span>
+		</div>
+		<div class="middle">
+			<div class="type-title">
+				<p class="type">NEWS</p>
+				<p class="title">Welcome to my first blog post, let's begin!</p>
+				<p class="author">Written by Isaiah Hunter</p>
+			</div>
+			<div class="options">
+				<div class="buttons">
+					<button class="archive">Archive Post</button>
+					<button class="edit">Edit Post</button>
+					<button class="trash"><i class="fa fa-trash"></i></button>
+				</div>
+			</div>
+		</div>
+	</ons-list-item>
+</ons-list> -->
