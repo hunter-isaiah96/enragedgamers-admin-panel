@@ -1,7 +1,33 @@
+<!-- <div class="posts-list-sort-wrapper">
+	<div class="posts-list-sort">
+		<span class="sort-by">Sort by:</span>
+		<select>
+			<option>Newest First</option>
+			<option>Oldest First</option>
+			<option>Featured</option>
+			<option>Approved</option>
+			<option>Pending</option>
+		</select>
+		<i class="fa fa-angle-down"></i>
+	</div>
+</div> -->
+<div class="sort-wrapper">
+	<div class="sort">
+		<span class="sort-by">Sort by: </span>
+		<div dropdown-select="ddSelectOptions"
+	        dropdown-model="ddSelectSelected"
+	        dropdown-item-label="text" 
+	        dropdown-onchange="order(selected)">
+	    </div>
+    </div>
+</div>
 <ul class="posts-list">
 	<li class="approved item" ng-repeat="post_item in posts">
 		<div class="top">
-			<span class="featured"><i class="fa fa-star"></i> Marked as Featured</span>
+			<span ng-class="{'featured': post_item.featured, 'non-featured': !post_item.featured}">
+				<i class="fa" ng-class="{'fa-star': post_item.featured, 'fa-star-o': !post_item.featured}"></i>
+				{{post_item.featured == true ? 'Marked as Featured' : 'Mark as Featured'}}
+			</span>
 			<span class="publish-date"><i class="fa fa-clock-o"></i> Publish 10 days ago</span>
 		</div>
 		<div class="middle">

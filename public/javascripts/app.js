@@ -1,4 +1,4 @@
-var app = angular.module('EGAP', ['ui.router', 'onsen']);
+var app = angular.module('EGAP', ['ui.router', 'ngDropdowns']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$stateProvider
@@ -8,7 +8,7 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		controller: 'PostsController'
 	}).state('new post', {
 		url: '/newpost',
-		templateUrl: '/partials/posts/posts.html',
+		templateUrl: '/partials/posts/newpost.html',
 		controller: 'NewPostController'
 	})
 	$locationProvider.html5Mode(true).hashPrefix('*');
@@ -19,8 +19,10 @@ app.run(function($rootScope, $state){
 })
 
 app.controller('MainController', function($rootScope, $scope, $state){
+	$scope.sort = 'Newest First'
+	$scope.$watch('sort')
 	$scope.menuOpen = false;
-	// $rootScope.state = $state;
+
 	$scope.navigation = [
 		{
 			title: 'Posts', 
@@ -62,7 +64,18 @@ app.controller('MainController', function($rootScope, $scope, $state){
 })
 
 app.controller('PostsController', function($rootScope, $scope, $state, AppService){
-	$scope.posts = []
+	$scope.posts = [];
+	$scope.ddSelectOptions = [
+        {
+            text: 'Newest First',
+            value: 'new'
+        },
+        {
+            text: 'Oldest First',
+            value: 'old',
+        }
+    ];
+    $scope.ddSelectSelected = $scope.ddSelectOptions[0];
 	AppService.getLatestPosts()
 	.then(function(response){
 		$scope.posts = response;
