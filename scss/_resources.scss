@@ -15,6 +15,20 @@ $reviews-color: #3DC7F0;
 $placeholder-color: #858591;
 $header-color: #5E5D74;
 
+tags-input .host, tags-input .tags{
+	border: none;
+	box-shadow: none;
+	height: auto;
+}
+
+tags-input .tags.focused{
+	box-shadow: none;
+}
+
+tags-input .tags .tag-item{
+	
+}
+
 @mixin center-items{
 	display: -webkit-box;
   	display: -moz-box;

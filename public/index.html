@@ -3,10 +3,13 @@
 	<base href="/"/>
 		<script type="text/javascript" src="https://use.fontawesome.com/e6415110e2.js"></script>
 		<link rel="stylesheet" type="text/css" href="/stylesheets/normalize.css" />
+		<link rel="stylesheet" href="/bower_components/perfect-scrollbar/min/perfect-scrollbar.min.css" />
+		<link rel="stylesheet" type="text/css" href="/bower_components/ng-tags-input/ng-tags-input.min.css" />
+		<link rel="stylesheet" type="text/css" href="/bower_components/quill/dist/quill.base.css" />
+		<link rel="stylesheet" type="text/css" href="/bower_components/quill/dist/quill.snow.css" />
 		<link rel="stylesheet" type="text/css" href="/bower_components/angular-dropdowns/dist/angular-dropdowns.css" />
-		<link rel="stylesheet" href="/bower_components/OnsenUI/css/onsenui.css"/>
-    	<link rel="stylesheet" href="/bower_components/OnsenUI/css/onsen-css-components.css"/>
 		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	</head>
 	<body ng-app="EGAP" ng-controller="MainController">
@@ -36,9 +39,31 @@
 				<ui-view class="main-content"></ui-view>
 			</div>
 		</div>
+		<script src="/bower_components/jquery/dist/jquery.js"></script>
+	  	<script src="/bower_components/jquery-bridget/jquery-bridget.js"></script>
+	  	<!-- Masonry...FUCKING MASONRY -->
+	  	<script src="/bower_components/ev-emitter/ev-emitter.js"></script>
+	  	<script src="/bower_components/desandro-matches-selector/matches-selector.js"></script>
+	  	<script src="/bower_components/fizzy-ui-utils/utils.js"></script>
+	  	<script src="/bower_components/get-size/get-size.js"></script>
+	  	<script src="/bower_components/outlayer/item.js"></script>
+	  	<script src="/bower_components/outlayer/outlayer.js"></script>
+	  	<script src="/bower_components/masonry/masonry.js"></script>
+	  	<script src="/bower_components/imagesloaded/imagesloaded.js"></script>
+	  	<!-- Angular Stuff -->
 		<script type="text/javascript" src="/bower_components/angular/angular.min.js"></script>
 		<script type="text/javascript" src="/bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     	<script src="/bower_components/angular-dropdowns/dist/angular-dropdowns.min.js"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    	<script src="/bower_components/quill/dist/quill.min.js"></script>
+    	<script src="/bower_components/angular-quill/angular-quill.js"></script>
+    	<script src="/bower_components/ng-tags-input/ng-tags-input.min.js"></script>
+	  	<script src="/bower_components/angular-masonry/angular-masonry.js"></script>
+	  	<script src="/bower_components/perfect-scrollbar/min/perfect-scrollbar.min.js"></script>
+		<script src="/bower_components/perfect-scrollbar/min/perfect-scrollbar.with-mousewheel.min.js"></script>
+		<script src="/bower_components/angular-perfect-scrollbar/src/angular-perfect-scrollbar.js"></script>
+		
+    	<script src="/bower_components/angular-base64-upload/dist/angular-base64-upload.min.js"></script>
 		<script type="text/javascript" src="/javascripts/app.js"></script>
 		<script type="text/javascript" src="/javascripts/services.js"></script>
 	</body>

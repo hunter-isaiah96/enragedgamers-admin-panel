@@ -12,7 +12,7 @@ var ArticleSchema = new Schema({
 	featured: {type: Boolean, default: false},
 	description: {type: String, default: '', required: true},
 	content: {type: String, default: '', required: true},
-	type: {type: String, default: '', required: true, enum: ['news', 'video', 'review', 'podcast']},
+	type: {type: String, default: '', required: true, enum: ['news', 'deal', 'video', 'review', 'podcast']},
 	video_type: {type: String, default: '', required: false},
 	video_id: {type: String, default: '', required: false},
 	score: {type: Number, default: '', required: false},

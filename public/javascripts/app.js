@@ -1,4 +1,4 @@
-var app = angular.module('EGAP', ['ui.router', 'ngDropdowns']);
+var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 'wu.masonry', 'perfect_scrollbar']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$stateProvider
@@ -19,8 +19,8 @@ app.run(function($rootScope, $state){
 })
 
 app.controller('MainController', function($rootScope, $scope, $state){
-	$scope.sort = 'Newest First'
-	$scope.$watch('sort')
+	$scope.sort = 'Newest First';
+	// $scope.$watch('sort')
 	$scope.menuOpen = false;
 
 	$scope.navigation = [
@@ -85,7 +85,34 @@ app.controller('PostsController', function($rootScope, $scope, $state, AppServic
 });
 
 app.controller('NewPostController', function($scope){
-	$scope.text = 'hello';
+	$scope.model = {cover_image: null, gallery: []}
+	$scope.ddSelectOptions = [
+        {
+            text: 'News',
+            value: 'news'
+        },
+        {
+            text: 'Deal',
+            value: 'deal'
+        },
+        {
+            text: 'Video',
+            value: 'video'
+        },
+        {
+            text: 'Podcasts',
+            value: 'podcasts',
+        },
+        {
+            text: 'Reviews',
+            value: 'reviews',
+        }
+    ];
+
+    $scope.addToGallery = function(file, base64_encode){
+       $scope.model.gallery.push(base64_encode);
+    };
+    $scope.ddSelectSelected = $scope.ddSelectOptions[0];
 });
 
 app.controller('ArchivesController', function($scope){

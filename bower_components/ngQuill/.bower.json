@@ -1,0 +1,44 @@
+{
+  "name": "ngQuill",
+  "version": "1.5.2",
+  "main": [
+    "src/ng-quill.min.js"
+  ],
+  "description": "AngularJS directive for the QuillJS rich text editor",
+  "authors": [
+    "Bengt Weiße <bengtler@gmail.com>"
+  ],
+  "ignore": [
+    "bower_components",
+    "node_modules",
+    "spec",
+    "demo.html",
+    "package.json",
+    "Gruntfile.js"
+  ],
+  "dependencies": {
+    "quill": "0.20.1",
+    "angular": "^1.5.6"
+  },
+  "keywords": [
+    "quill",
+    "rich text",
+    "angularjs",
+    "angular",
+    "directive",
+    "editor",
+    "wysiwyg"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/KillerCodeMonkey/ngQuill",
+  "_release": "1.5.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.5.2",
+    "commit": "2832dba6ad6db1cddf5e4519430d98996c020e5e"
+  },
+  "_source": "https://github.com/KillerCodeMonkey/ngQuill.git",
+  "_target": "^1.5.2",
+  "_originalSource": "ngquill",
+  "_direct": true
+}

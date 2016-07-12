@@ -1,8 +1,54 @@
 <div class="new-post">
 	<div class="main">
 		<input type="text" placeholder="Type the title of the post here ..." class="title" />
+		<div ng-model="article" quill></div>
 	</div>
 	<div class="side">
-		
+		<div class="publish-draft side-row">
+			<p class="module-name">Publish & Draft</p>
+			<button class="publish">Publish</button>
+			<button class="draft">Save As Draft</button>
+		</div>
+		<div class="categories side-row">
+			<p class="module-name">Category</p>
+			<div dropdown-select="ddSelectOptions"
+	        dropdown-model="ddSelectSelected"
+	        dropdown-item-label="text" 
+	        dropdown-onchange="order(selected)">
+	    	</div>
+		</div>
+		<div class="tags side-row">
+			<p class="module-name">Tags</p>
+			<tags-input ng-model="tags"></tags-input>
+		</div>
+		<div class="cover-image side-row">
+			<p class="module-name">Cover Image</p>
+			<label class="no-image" ng-if="model.cover_image == null">
+				<p>UPLOAD AN IMAGE <i class="fa fa-cloud-upload"></i></p>
+				<input type="file" class="input" ng-model='model.cover_image' base-sixty-four-input style="display: none" />
+			</label>
+			<div class="image" ng-if="model.cover_image != null">
+				<input class="alt" type="text" placeholder="Image Description"/>
+				<label>
+					<img data-ng-src="{{'data:' + model.cover_image.filetype + ';base64,'+ model.cover_image.base64}}" />
+					<input type="file" class="input" ng-model='model.cover_image' base-sixty-four-input style="display: none" />
+				</label>
+			</div>
+		</div>
+		<div class="gallery side-row">
+			<p class="module-name">
+				<span>Gallery</span>
+				<label class="action">
+					Add Images
+					<input type="file" class="input" ng-model="files" multiple parser="addToGallery" base-sixty-four-input style="display: none" />
+				</label>
+			</p>
+			<ul masonry ng-if="model.gallery.length > 0">
+				<li class="image masonry-brick" ng-repeat="item in model.gallery">
+					<img data-ng-src="{{'data:' + item.filetype + ';base64,'+ item.base64}}" />
+				</li>
+				
+			</ul> 
+		</div>
 	</div>
 </div>
