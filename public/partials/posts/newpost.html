@@ -1,38 +1,40 @@
 <div class="new-post">
 	<div class="main">
-		<input type="text" placeholder="Type the title of the post here ..." class="title" />
-		<div ng-model="article" quill></div>
+		<input type="text" placeholder="Type the title of the post here ..." class="title" ng-model="post.title"/>
+		<div ng-model="post.content" quill></div>
 	</div>
 	<div class="side">
 		<div class="publish-draft side-row">
 			<p class="module-name">Publish & Draft</p>
-			<button class="publish">Publish</button>
-			<button class="draft">Save As Draft</button>
+			<button class="publish" ng-click="publishArticle()">Publish</button>
+			<button class="draft" ng-click="saveAsDraft()">Save As Draft</button>
 		</div>
 		<div class="categories side-row">
 			<p class="module-name">Category</p>
-			<div dropdown-select="ddSelectOptions"
-	        dropdown-model="ddSelectSelected"
+			<div dropdown-select="categories"
+	        dropdown-model="post.type"
 	        dropdown-item-label="text" 
 	        dropdown-onchange="order(selected)">
 	    	</div>
 		</div>
 		<div class="tags side-row">
 			<p class="module-name">Tags</p>
-			<tags-input ng-model="tags"></tags-input>
+			<tags-input ng-model="post.tags"></tags-input>
 		</div>
 		<div class="cover-image side-row">
 			<p class="module-name">Cover Image</p>
-			<label class="no-image" ng-if="model.cover_image == null">
+			<label class="no-image" ng-if="post.cover_image == null">
 				<p>UPLOAD AN IMAGE <i class="fa fa-cloud-upload"></i></p>
-				<input type="file" class="input" ng-model='model.cover_image' base-sixty-four-input style="display: none" />
+				<input type="file" class="input" ng-model='post.cover_image' style="display: none" accept="image/png, image/jpeg, image/jpg" onchange="return checkPNG(this)" required base-sixty-four-input/>
 			</label>
-			<div class="image" ng-if="model.cover_image != null">
+			<div class="image" ng-if="post.cover_image != null">
 				<input class="alt" type="text" placeholder="Image Description"/>
-				<label>
-					<img data-ng-src="{{'data:' + model.cover_image.filetype + ';base64,'+ model.cover_image.base64}}" />
-					<input type="file" class="input" ng-model='model.cover_image' base-sixty-four-input style="display: none" />
-				</label>
+				<form>
+					<label>
+						<img data-ng-src="{{'data:' + post.cover_image.filetype + ';base64,'+ post.cover_image.base64}}" />
+						<input type="file" class="input" ng-model="post.cover_image" style="display: none" accept="image/png, image/jpeg, image/jpg" required base-sixty-four-input />
+					</label>
+				</form>
 			</div>
 		</div>
 		<div class="gallery side-row">
@@ -40,15 +42,34 @@
 				<span>Gallery</span>
 				<label class="action">
 					Add Images
-					<input type="file" class="input" ng-model="files" multiple parser="addToGallery" base-sixty-four-input style="display: none" />
+					<input type="file" class="input" ng-model="files" multiple parser="addToGallery" style="display: none" accept="image/png, image/jpeg, image/jpg" base-sixty-four-input/>
 				</label>
 			</p>
-			<ul masonry ng-if="model.gallery.length > 0">
-				<li class="image masonry-brick" ng-repeat="item in model.gallery">
-					<img data-ng-src="{{'data:' + item.filetype + ';base64,'+ item.base64}}" />
-				</li>
-				
-			</ul> 
+			<!-- <div ng-scrollbars> -->
+				<ul masonry ui-sortable ng-model="post.gallery" ng-if="post.gallery.length > 0">
+					<li class="image masonry-brick" ng-repeat="item in post.gallery" >
+						<i class="fa fa-times remove" ng-click="removeFromGallery($index)"></i>
+						<img data-ng-src="{{'data:' + item.filetype + ';base64,'+ item.base64}}" />
+					</li>
+				</ul>
+			<!-- </div> -->
+
 		</div>
 	</div>
 </div>
+
+<script>
+function checkPNG(el) {
+  if(el.value) {
+    var parts = el.value.split('.');
+    if(parts[parts.length - 1].toLowerCase() === 'png') {
+      return true;
+    } else {
+      alert('Please specify a PNG file.');
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+</script>

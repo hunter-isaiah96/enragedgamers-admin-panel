@@ -1,4 +1,4 @@
-var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 'wu.masonry', 'perfect_scrollbar']);
+var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 'wu.masonry', 'ui.sortable']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$stateProvider
@@ -85,8 +85,8 @@ app.controller('PostsController', function($rootScope, $scope, $state, AppServic
 });
 
 app.controller('NewPostController', function($scope){
-	$scope.model = {cover_image: null, gallery: []}
-	$scope.ddSelectOptions = [
+	$scope.post = {title: '', content: '', type: '', tags: [], cover_image: null, gallery: []}
+	$scope.categories = [
         {
             text: 'News',
             value: 'news'
@@ -109,10 +109,29 @@ app.controller('NewPostController', function($scope){
         }
     ];
 
+    if(localStorage.getItem('pickle') != null){
+		$scope.post = localStorage.getItem('draft');	
+	}
+
+	$scope.post.type = $scope.categories[0];
+
+	$scope.publishArticle = function(){
+		console.log($scope.post)
+	}
+
+	$scope.saveAsDraft = function(){
+		localStorage.setItem('draft', JSON.stringify($scope.post));
+	}
+
     $scope.addToGallery = function(file, base64_encode){
-       $scope.model.gallery.push(base64_encode);
+       $scope.post.gallery.push(base64_encode);
     };
-    $scope.ddSelectSelected = $scope.ddSelectOptions[0];
+
+    $scope.removeFromGallery = function(index){
+        $scope.post.gallery.splice(index, 1);
+    };
+
+    
 });
 
 app.controller('ArchivesController', function($scope){
