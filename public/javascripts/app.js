@@ -1,4 +1,5 @@
-var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 'wu.masonry', 'ui.sortable', 'checklist-model']);
+var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 
+	'wu.masonry', 'ui.sortable', 'checklist-model', '720kb.datepicker', 'angular-flatpickr']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$stateProvider
@@ -121,7 +122,8 @@ app.controller('PostsController', function($rootScope, $scope, $state, AppServic
 app.controller('NewPostController', function($scope, $state, AppService, Games, $http){
 	$scope.games = [];
 	$scope.game_search = '';
-	$scope.post = {title: '', featured: false, description: 'Default Test', content: '', type: '', tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter'}
+	$scope.post = {title: '', game: null, featured: false, description: 'Default Test', content: '', type: '', 
+	tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter'}
 	$scope.categories = [
         {
             text: 'News',
@@ -150,6 +152,12 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 	}
 
 	$scope.post.type = $scope.categories[0];
+
+	$scope.selectGame = function(index){
+		$scope.post.game = $scope.games[index];
+		$scope.games = [];
+		$scope.game_search = '';
+	};
 
 	$scope.search_games = function(){
 		Games.findGames($scope.game_search)
@@ -185,9 +193,20 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
     	return new Array(num);   
 	}
 
+	function isEmpty(obj) {
+	    for(var prop in obj) {
+	        if(obj.hasOwnProperty(prop))
+	            return false;
+	    }
+
+	    return true && JSON.stringify(obj) === JSON.stringify({});
+	}
+
+
 });
 
 app.controller('NewGameController', function($scope, Games){
+
 	$scope.genres = [
 		'2D Shooter',
 		'First-Person-Shooter',
@@ -199,6 +218,7 @@ app.controller('NewGameController', function($scope, Games){
 		'Simulation',
 		'Strategy/Tactics',
 		'Dance/Rhythm',
+		'Survival',
 		'Survival Horror',
 		'Massive Multiplayer Online',
 		'Multiplayer Online Battle Arena',
@@ -246,8 +266,13 @@ app.controller('NewGameController', function($scope, Games){
 		'MAC'
 	];
 
-	$scope.game = {name: '', main_image: null, background_image: null, publisher: '', developers: [], genre: '', platforms: [], esrb: ''};
-	// $scope.game = {name: 'The Division', main_image: null, background_image: null, publisher: 'Ubisoft', developers: [], genre: 'Third-Person-Shooter', platforms: ['Playstation 4', 'Xbox One', 'Windows'], esrb: 'Mature 17+'};
+	$scope.dateOpts = {
+	    dateFormat: 'Y-m-d'
+	};
+	$scope.datePostSetup = function(fpItem) {
+	    console.log('flatpickr', fpItem);
+	}
+	$scope.game = {name: '', release_date: null, main_image: null, background_image: null, publisher: '', developers: [], genre: '', platforms: [], esrb: ''};
 
 	$scope.addGame = function(){
 		Games.addGame($scope.game)

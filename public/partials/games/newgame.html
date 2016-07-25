@@ -32,6 +32,10 @@
 		<label>Developer <tags-input ng-model="game.developers" placeholder="Add A Developer" replace-spaces-with-dashes="false"></tags-input></label>
 	</section>
 	<section>
+		<label>Release Date</label>
+		<input style="padding: 10px;" ng-flatpickr fp-opts="dateOpts" fp-on-setup="datePostSetup(fpItem)" ng-model="game.release_date" data-mindate="today" data-enabletime="true" placeholder="Release Date...">
+	</section>
+	<section>
 		<label>Genre</label>
 		<ul>
 			<li ng-repeat="genre in genres track by $index">

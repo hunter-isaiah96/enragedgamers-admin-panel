@@ -14,15 +14,17 @@ module.exports = function(app){
 		if(_.isEmpty(req.query.search)){
 			return res.json([])
 		}
-		Game.find({name: { $regex: new RegExp("^" + req.query.search.toLowerCase(), "i")}}, function(err, games){
+		Game.find({name: { $regex: new RegExp("^" + req.query.search.toLowerCase(), "i")}}, '_id name', function(err, games){
 			if(err) throw err;
 			res.json(games)
 		})
 	})
 	
 	router.post('/', function(req, res){
+		console.log(req.body.release_date)
 		var newGame = new Game({
 			name: req.body.name,
+			release_date: req.body.release_date,
 			publisher: req.body.publisher,
 			genre: req.body.genre,
 			developers: req.body.developers,
@@ -74,6 +76,7 @@ module.exports = function(app){
 			}
 		], function(err, result){
 			if(err){return res.json(err)}
+			console.log(result[result.length])
 			res.json(result[result.length])
 		})
 	})

@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var GameSchema = new Schema({
 	slug: {type: String, required: true},
 	name: {type: String, required: true},
+	release_date: {type: Date, required: true},
 	main_image: {type:{
 		public_id: {type: String, required: true},
 	  	version: {type: Number, required: true},

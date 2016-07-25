@@ -31,10 +31,10 @@
 			<tags-input ng-model="post.tags"></tags-input>
 		</div>
 		<div class="game side-row">
-			<p class="module-name">Game</p>
+			<p class="module-name"><span>Game</span><span class="game-name">{{post.game.name}}</span></p>
 			<input type="text" placeholder="Search For A Game" ng-model="game_search" ng-change="search_games()" ng-model-options="{debounce: 750}"/>
 			<ul class="drop-down" ng-if="games.length > 0">
-				<li ng-repeat="i in games">
+				<li ng-repeat="i in games" ng-click="selectGame($index)">
 					<h2>{{i.name}}</h2>
 				</li>
 			</ul>

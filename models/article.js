@@ -5,6 +5,7 @@ var val = require('validator');
 
 var ArticleSchema = new Schema({
 	author: {type: String, default: '', required: true},
+	game: {type: {_id: {type: String, required: true}, }, required: true},
 	created_at: {type: Date, default: Date.now()},
 	perma_link: {type: String, default: '', unique: true, required: true},
 	tags: {type: [], required: true},

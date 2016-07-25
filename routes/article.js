@@ -43,6 +43,7 @@ module.exports = function(app){
 
 	router.post('/', function(req, res){
 		var newArticle = new Article({
+			game: req.body.game._id,
 			author: req.body.author,
 			tags: req.body.tags,
 			title: req.body.title,
