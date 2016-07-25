@@ -1,0 +1,65 @@
+<div class="new-game">
+	<section>
+		<label style="text-align: center;">
+			<i class="fa fa-info" style="color: #fbf;"></i> 
+			<span> PLEASE BE SURE THAT ALL INFORMATION IS OBTAINED FROM A CREDIBLE SOURCE AND BE SURE YOU ARE NOT SUBMITTING A DUPLICATE </span> 
+			<i class="fa fa-info" style="color: #fbf;"></i>
+		</label>
+	</section>
+	<section>
+		<label>Game Name <input type="text" placeholder="Game Name" ng-model="game.name"/></label>
+	</section>
+	<section>
+		<label>Main Image</label>
+		<label>
+			<p>{{game.main_image == null ? 'Upload Main Image' : 'Replace Main Image'}} <i class="fa fa-cloud-upload"></i></p>
+			<input type="file" class="input" ng-model='game.main_image' style="display: none" accept="image/png, image/jpeg, image/jpg" required base-sixty-four-input/>
+		</label>
+		<img ng-if="game.main_image != null" width="200" data-ng-src="{{'data:' + game.main_image.filetype + ';base64,'+ game.main_image.base64}}">
+	</section>
+	<section>
+		<label>Background Image</label>
+		<label>
+			<p>{{game.background_image == null ? 'Upload Background' : 'Replace Background'}} <i class="fa fa-cloud-upload"></i></p>
+			<input type="file" class="input" ng-model='game.background_image' style="display: none" accept="image/png, image/jpeg, image/jpg" required base-sixty-four-input/>
+		</label>
+		<img ng-if="game.background_image != null" width="200" data-ng-src="{{'data:' + game.background_image.filetype + ';base64,'+ game.background_image.base64}}">
+	</section>
+	<section>
+		<label>Publisher <input type="text" placeholder="Publisher" ng-model="game.publisher" /></label>
+	</section>
+	<section>
+		<label>Developer <tags-input ng-model="game.developers" placeholder="Add A Developer" replace-spaces-with-dashes="false"></tags-input></label>
+	</section>
+	<section>
+		<label>Genre</label>
+		<ul>
+			<li ng-repeat="genre in genres track by $index">
+				<label>
+					<input type="radio" name="genre" value="{{genre}}" ng-model="game.genre" /> 
+					{{genre}}
+				</label>
+			</li>
+		</ul>
+	</section>
+	<section>
+		<label>Platform(s) </label>
+		<ul>
+			<li ng-repeat="platform in platforms track by $index"><label><input type="checkbox" checklist-model="game.platforms" checklist-value="platform" /> {{platform}}</label></li>
+		</ul>
+	</section>
+	<section>
+		<label>ESRB Rating</label>
+		<ul>
+			<li ng-repeat="rating in esrb track by $index">
+				<label>
+					<input type="radio" name="esrb" value="{{rating}}" ng-model="game.esrb" /> 
+					{{rating}}
+				</label>
+			</li>
+		</ul>
+	</section>
+	<section>
+		<button class="submit" ng-click="addGame()">Add Game</button>
+	</section>
+</div>

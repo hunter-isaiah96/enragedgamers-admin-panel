@@ -32,7 +32,7 @@
 		</div>
 		<div class="middle">
 			<div class="type-title">
-				<p class="type">{{post_item.type}}</p>
+				<p class="type">{{post_item.type.text}}</p>
 				<p class="title">{{post_item.title}}</p>
 				<p class="author">Written by {{post_item.author}}</p>
 			</div>
@@ -40,7 +40,7 @@
 				<div class="buttons">
 					<button class="archive">Archive Post</button>
 					<button class="edit">Edit Post</button>
-					<button class="trash"><i class="fa fa-trash"></i></button>
+					<button class="trash" ng-click="deleteArticle($index)"><i class="fa fa-trash"></i></button>
 				</div>
 			</div>
 		</div>

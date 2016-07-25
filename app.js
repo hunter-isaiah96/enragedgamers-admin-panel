@@ -5,6 +5,7 @@ cookieParser = require('cookie-parser'),
 bodyParser = require('body-parser'),
 routes = require('./routes/index'),
 articleRoutes = require('./routes/article'),
+gameRoutes = require('./routes/game')
 userRoutes = require('./routes/users'),
 sassMiddleware = require('node-sass-middleware'),
 app = express(),
@@ -19,7 +20,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-app.db = mongoose.connect(process.env.MLAB_URI, function(err) { if (err) {console.log(err);} });
+app.db = mongoose.connect(process.env.MLAB_URL, function(err) { if (err) {console.log(err);} });
 app.cloudinary = cloudinary;
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -42,11 +43,13 @@ app.use(
 )
 app.models = {};
 app.models['Article'] = mongoose.model('Article', require('./models/article')); 
+app.models['Game'] = mongoose.model('Game', require('./models/game')); 
 app.use('/bower_components',  express.static(__dirname + '/bower_components'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/api/article', articleRoutes(app))
+app.use('/api/games', gameRoutes(app))
 app.use('/api/user', userRoutes(app))
 // app.use('/users', users);
 app.all('/*', function(req, res) {

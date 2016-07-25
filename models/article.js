@@ -5,14 +5,18 @@ var val = require('validator');
 
 var ArticleSchema = new Schema({
 	author: {type: String, default: '', required: true},
+	created_at: {type: Date, default: Date.now()},
 	perma_link: {type: String, default: '', unique: true, required: true},
-	tags: {type: [String], tags: [], required: true},
+	tags: {type: [], required: true},
 	title: {type: String, default: '', required: true},
 	views: {type: Number, default: 0},
 	featured: {type: Boolean, default: false},
 	description: {type: String, default: '', required: true},
-	content: {type: String, default: '', required: true},
-	type: {type: String, default: '', required: true, enum: ['news', 'deal', 'video', 'review', 'podcast']},
+	content: {type: String, default: '', required: false},
+	type: {type: {
+		text: {type: String, required: true},
+		value: {type: String, required: true}
+	}, default: '', required: true},
 	video_type: {type: String, default: '', required: false},
 	video_id: {type: String, default: '', required: false},
 	score: {type: Number, default: '', required: false},
@@ -35,7 +39,7 @@ var ArticleSchema = new Schema({
 	  	bytes: {type: Number, required: true},
 	  	url: {type: String, required: true},
 	  	secure_url: {type: String, required: true}
-	}], default: [], required: false}
+	}], default: [], required: false},
 });
 
 ArticleSchema.index({

@@ -1,4 +1,4 @@
-var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 'wu.masonry', 'ui.sortable']);
+var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 'wu.masonry', 'ui.sortable', 'checklist-model']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$stateProvider
@@ -10,12 +10,28 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		url: '/newpost',
 		templateUrl: '/partials/posts/newpost.html',
 		controller: 'NewPostController'
+	}).state('new game', {
+		url: '/newgame',
+		templateUrl: '/partials/games/newgame.html',
+		controller: 'NewGameController'
 	})
 	$locationProvider.html5Mode(true).hashPrefix('*');
 })
 
 app.run(function($rootScope, $state){
 	$rootScope.state = $state;
+	// $scope.isLoading = function () {
+	//    return $http.pendingRequests.length !== 0;
+	// };
+	$rootScope.$on('loading:progress', function (){
+		$rootScope.isLoading = true;
+    // show loading gif
+	});
+
+	$rootScope.$on('loading:finish', function (){
+		$rootScope.isLoading = false;
+	    // hide loading gif
+	});
 })
 
 app.controller('MainController', function($rootScope, $scope, $state){
@@ -24,6 +40,15 @@ app.controller('MainController', function($rootScope, $scope, $state){
 	$scope.menuOpen = false;
 
 	$scope.navigation = [
+		{
+			title: 'Games', 
+			open: false, 
+			icon: 'fa-gamepad', 
+			sub: [
+				{title: 'All Games', state: 'games'},
+				{title: 'New Game', state: 'new game'}
+			]
+		},
 		{
 			title: 'Posts', 
 			open: false,
@@ -82,10 +107,21 @@ app.controller('PostsController', function($rootScope, $scope, $state, AppServic
 	}, function(err){
 
 	})
+
+	$scope.deleteArticle = function(index){
+		AppService.deletePost($scope.posts[index])
+		.then(function(response){
+			$scope.posts.splice(index, 1);
+		}, function(err){
+
+		})
+	};
 });
 
-app.controller('NewPostController', function($scope){
-	$scope.post = {title: '', content: '', type: '', tags: [], cover_image: null, gallery: []}
+app.controller('NewPostController', function($scope, $state, AppService, Games, $http){
+	$scope.games = [];
+	$scope.game_search = '';
+	$scope.post = {title: '', featured: false, description: 'Default Test', content: '', type: '', tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter'}
 	$scope.categories = [
         {
             text: 'News',
@@ -115,8 +151,22 @@ app.controller('NewPostController', function($scope){
 
 	$scope.post.type = $scope.categories[0];
 
+	$scope.search_games = function(){
+		Games.findGames($scope.game_search)
+		.then(function(result){
+			$scope.games = result;
+			console.log($scope.games)
+		})
+	};
 	$scope.publishArticle = function(){
-		console.log($scope.post)
+		AppService.createPost($scope.post)
+		.then(function(result){
+			if(result.success == true){
+				$state.go('posts')
+			}else{
+				alert(result.msg)
+			}
+		});
 	}
 
 	$scope.saveAsDraft = function(){
@@ -130,10 +180,83 @@ app.controller('NewPostController', function($scope){
     $scope.removeFromGallery = function(index){
         $scope.post.gallery.splice(index, 1);
     };
-
     
+    $scope.getNumber = function(num) {
+    	return new Array(num);   
+	}
+
 });
 
-app.controller('ArchivesController', function($scope){
-	$scope.text = 'hello';
+app.controller('NewGameController', function($scope, Games){
+	$scope.genres = [
+		'2D Shooter',
+		'First-Person-Shooter',
+		'Third-Person-Shooter',
+		'Adventure',
+		'Platformer',
+		'Role-Playing Game',
+		'Puzzle',
+		'Simulation',
+		'Strategy/Tactics',
+		'Dance/Rhythm',
+		'Survival Horror',
+		'Massive Multiplayer Online',
+		'Multiplayer Online Battle Arena',
+		'Other'
+	];
+
+	$scope.esrb = [
+		'Early Childhood',
+		'Everyone',
+		'Everyone 10+',
+		'Teen',
+		'Mature 17+',
+		'Adults Only 18+', 
+		'Rating Pending'
+	];
+
+	$scope.platforms = [
+		'Arcade',
+		'Super Nintendo Entertainment System',
+		'Nintendo 64',
+		'Nintendo Gamecube',
+		'Nintendo DS', 
+		'Nintendo 3DS',
+		'Nintendo Wii',
+		'Nintendo Wii U',
+		'Nintendo Gameboy',
+		'Nintendo Gameboy Color',
+		'Nintendo Gameboy Advance',
+		'Nintendo Gameboy Advance SP',
+		'Atari',
+		'Sega Dreamcast',
+		'Sega Saturn',
+		'Sega Genesis',
+		'Playstation 1',
+		'Playstation 2',
+		'Playstation 3',
+		'Playstation 4',
+		'Playstation Portable',
+		'Playstation VITA',
+		'Xbox',
+		'Xbox 360',
+		'Xbox One',
+		'Windows',
+		'Linux',
+		'MAC'
+	];
+
+	$scope.game = {name: '', main_image: null, background_image: null, publisher: '', developers: [], genre: '', platforms: [], esrb: ''};
+	// $scope.game = {name: 'The Division', main_image: null, background_image: null, publisher: 'Ubisoft', developers: [], genre: 'Third-Person-Shooter', platforms: ['Playstation 4', 'Xbox One', 'Windows'], esrb: 'Mature 17+'};
+
+	$scope.addGame = function(){
+		Games.addGame($scope.game)
+		.then(function(result){
+			if(result.success){
+				alert(result.msg)
+			}else{
+				alert(result.msg)
+			}
+		})
+	};
 });
