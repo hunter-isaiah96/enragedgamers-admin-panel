@@ -10,10 +10,22 @@ app.factory('AppService', function($q, $rootScope, $http){
 				}
 			})
 		},
+		findOnePost: function(id){
+			return $http.get('/api/article/' + id)
+			.then(function(result){
+				return result.data;
+			});
+		},
 		createPost: function(obj){
 			return $http.post('/api/article', obj)
 			.then(function(result){
 				console.log(result)
+				return result.data;
+			});
+		},
+		updatePost: function(obj){
+			return $http.put('/api/article', obj)
+			.then(function(result){
 				return result.data;
 			});
 		},

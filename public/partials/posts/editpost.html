@@ -1,0 +1,73 @@
+<div class="new-post">
+	<div class="main">
+		<input type="text" placeholder="Type the title of the post here ..." class="title" ng-model="post.title"/>
+		<div ng-model="post.content" quill></div>
+	</div>
+	<div class="side">
+		<div class="publish-draft side-row">
+			<p class="module-name">
+				<span class="name">Update</span>
+				<label class="action-checkbox">
+					<span>Featured: </span>
+					<input type="checkbox" style="display: none;" ng-model="post.featured">
+					<span class="check">
+						<i class="fa fa-check"></i>
+					</span>
+				</label>
+			</p>
+			<button class="publish" ng-click="updateArticle()">Update</button>
+		</div>
+		<div class="categories side-row">
+			<p class="module-name">Category</p>
+			<div dropdown-select="categories"
+	        dropdown-model="post.type"
+	        dropdown-item-label="text" 
+	        dropdown-onchange="order(selected)">
+	    	</div>
+		</div>
+		<div class="tags side-row">
+			<p class="module-name">Tags</p>
+			<tags-input ng-model="post.tags"></tags-input>
+		</div>
+		<div class="game side-row">
+			<p class="module-name"><span>Game</span><span class="game-name">{{post.game.name}}</span></p>
+			<input type="text" placeholder="Search For A Game" ng-model="game_search" ng-change="search_games()" ng-model-options="{debounce: 750}"/>
+			<ul class="drop-down" ng-if="games.length > 0">
+				<li ng-repeat="i in games" ng-click="selectGame($index)">
+					<h2>{{i.name}}</h2>
+				</li>
+			</ul>
+		</div>
+		<div class="cover-image side-row">
+			<p class="module-name">Cover Image</p>
+			<div class="image">
+				<label>
+					<img data-ng-src="{{post.file == null ? post.hero_image.url : 'data:' + post.file.filetype + ';base64,'+ post.file.base64}}" />
+					<input type="file" class="input" ng-model="post.file" style="display: none" accept="image/png, image/jpeg, image/jpg" required base-sixty-four-input />
+				</label>
+			</div>
+		</div>
+		<div class="gallery side-row">
+			<p class="module-name">
+				<span class="name">Gallery</span>
+				<label class="action-button">
+					Add Images
+					<input type="file" class="input" ng-model="files" multiple parser="addToNewGallery" style="display: none" accept="image/png, image/jpeg, image/jpg" base-sixty-four-input/>
+				</label>
+			</p>
+			<!-- <div ng-scrollbars> -->
+			<ul masonry ng-show="post.new_gallery.length > 0 || post.gallery.length > 0">
+				<li class="image masonry-brick" ng-repeat="item in post.gallery" >
+					<i class="fa fa-ban remove" ng-click="removeFromGallery($index)"></i>
+					<img data-ng-src="{{item.url}}" />
+				</li>
+				<li class="image masonry-brick" ng-repeat="item in post.new_gallery" >
+					<i class="fa fa-times remove" ng-click="removeFromNewGallery($index)"></i>
+					<img data-ng-src="{{'data:' + item.filetype + ';base64,'+ item.base64}}" />
+				</li>
+			</ul>
+			<!-- </div> -->
+
+		</div>
+	</div>
+</div>

@@ -11,6 +11,10 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 		url: '/newpost',
 		templateUrl: '/partials/posts/newpost.html',
 		controller: 'NewPostController'
+	}).state('edit post', {
+		url:'/editpost/:id',
+		templateUrl: '/partials/posts/editpost.html',
+		controller: 'EditPostController'
 	}).state('new game', {
 		url: '/newgame',
 		templateUrl: '/partials/games/newgame.html',
@@ -123,7 +127,7 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 	$scope.games = [];
 	$scope.game_search = '';
 	$scope.post = {title: '', game: null, featured: false, description: 'Default Test', content: '', type: '', 
-	tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter'}
+	tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter'};
 	$scope.categories = [
         {
             text: 'News',
@@ -147,10 +151,6 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
         }
     ];
 
-    if(localStorage.getItem('pickle') != null){
-		$scope.post = localStorage.getItem('draft');	
-	}
-
 	$scope.post.type = $scope.categories[0];
 
 	$scope.selectGame = function(index){
@@ -166,6 +166,7 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 			console.log($scope.games)
 		})
 	};
+	
 	$scope.publishArticle = function(){
 		AppService.createPost($scope.post)
 		.then(function(result){
@@ -177,10 +178,6 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 		});
 	}
 
-	$scope.saveAsDraft = function(){
-		localStorage.setItem('draft', JSON.stringify($scope.post));
-	}
-
     $scope.addToGallery = function(file, base64_encode){
        $scope.post.gallery.push(base64_encode);
     };
@@ -188,20 +185,83 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
     $scope.removeFromGallery = function(index){
         $scope.post.gallery.splice(index, 1);
     };
-    
-    $scope.getNumber = function(num) {
-    	return new Array(num);   
-	}
+});
 
-	function isEmpty(obj) {
-	    for(var prop in obj) {
-	        if(obj.hasOwnProperty(prop))
-	            return false;
-	    }
+app.controller('EditPostController', function($scope, Games, AppService, $stateParams){
+	$scope.games = [];
+	$scope.game_search = '';
 
-	    return true && JSON.stringify(obj) === JSON.stringify({});
-	}
+	$scope.categories = [
+        {
+            text: 'News',
+            value: 'news'
+        },
+        {
+            text: 'Deal',
+            value: 'deal'
+        },
+        {
+            text: 'Video',
+            value: 'video'
+        },
+        {
+            text: 'Podcasts',
+            value: 'podcasts',
+        },
+        {
+            text: 'Reviews',
+            value: 'reviews',
+        }
+    ];
 
+    $scope.selectGame = function(index){
+		$scope.post.game = $scope.games[index];
+		$scope.games = [];
+		$scope.game_search = '';
+	};
+
+    $scope.search_games = function(){
+		Games.findGames($scope.game_search)
+		.then(function(result){
+			$scope.games = result;
+		})
+	};
+
+    AppService.findOnePost($stateParams.id)
+    .then(function(result){
+    	if(result.success){
+    		$scope.post = result.post;
+    		$scope.post.new_gallery = [];
+    		$scope.post.removed_images = {ids: [], public_ids: []}
+    	}else{
+    		alert(result.msg)
+    	}
+    })
+
+    $scope.updateArticle = function(){
+    	AppService.updatePost($scope.post)
+    	.then(function(result){
+    		if(result.success){
+    			alert('Successfully updated');
+    		}else{
+				alert(result.msg)
+    		}
+    	})
+    };
+
+    $scope.addToNewGallery = function(file, base64_encode){
+      	$scope.post.new_gallery.push(base64_encode);
+    };
+
+    $scope.removeFromGallery = function(index){
+    	$scope.post.removed_images.public_ids.push($scope.post.gallery[index].public_id)
+    	$scope.post.removed_images.ids.push($scope.post.gallery[index]._id);
+    	$scope.post.gallery.splice(index, 1);
+    };
+
+    $scope.removeFromNewGallery = function(index){
+        $scope.post.new_gallery.splice(index, 1);
+    };
 
 });
 
