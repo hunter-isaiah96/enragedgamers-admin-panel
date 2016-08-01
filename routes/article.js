@@ -59,29 +59,32 @@ module.exports = function(app){
 	});
 
 	router.post('/', function(req, res){
-		var newArticle = new Article({
-			game: req.body.game._id,
-			author: req.body.author,
-			tags: req.body.tags,
-			title: req.body.title,
-			description: req.body.description,
-			content: req.body.content,
-			type: req.body.type,
-			featured: req.body.featured
-		});
+		var newArticle = null;
 		async.series([
 			function(callback){
 				if(val.isNull(req.body.title) || !val.isLength(req.body.title, {min: 10, max: 100})){
-					return callback({message: 'Title Must Be Between 15 and 100 Characters Long'})
+					return callback({success: false, msg: 'Title Must Be Between 15 and 100 Characters Long'})
 				}if(val.isNull(req.body.description) || !val.isLength(req.body.description, {min: 5, max: 50})){
-					return callback({message: 'Description Must Be Between 5 and 50 Characters Long'})
+					return callback({success: false, msg: 'Description Must Be Between 5 and 50 Characters Long'})
 				}else if(req.body.tags.length == 0 || req.body.tags.length > 5){
-					return callback({message: 'Please Choose Up To 5 Tags'})
+					return callback({success: false, msg: 'Please Choose Up To 5 Tags'})
 				}else if(val.isNull(req.body.content)){
-					return callback({message: 'Content Cannot Be Empty'});
+					return callback({success: false, msg: 'Content Cannot Be Empty'});
 				}else if(!val.isIn(req.body.type.value, ['news', 'deal', 'video', 'review', 'podcast'])){
-					return callback({message: 'Please Choose A Type (news, deal, video, review, podcast)'});
+					return callback({success: false, msg: 'Please Choose A Type (news, deal, video, review, podcast)'});
+				}else if(_.isEmpty(req.body.game._id)){
+					return callback({success: false, msg: 'Please Select a Game For This post'});
 				}else{
+					newArticle = new Article({
+						game: req.body.game._id,
+						author: req.body.author,
+						tags: req.body.tags,
+						title: req.body.title,
+						description: req.body.description,
+						content: req.body.content,
+						type: req.body.type,
+						featured: req.body.featured
+					});
 					newArticle.perma_link = slug(newArticle.title, {lower: true});
 					callback(null, {})
 				}
@@ -91,20 +94,37 @@ module.exports = function(app){
 					callback(null, {})
 				}else if(req.body.type.value == 'video'){
 					if(youtubeUrl.valid(req.body.video_url)){
-						newArticle.video_type = 'youtube';
-						newArticle.video_id = youtubeUrl.extractId(req.body.video_url);
+						newArticle.video.video_type = 'youtube';
+						newArticle.video.id = youtubeUrl.extractId(req.body.video_url);
+						newArticle.video.url = req.body.video_url;
 						callback(null, {})
 					}else if(vimeoRegex().test(req.body.video_url)){
-						newArticle.video_type = 'vimeo';
-						newArticle.video_id = vimeoRegex().exec(req.body.video_url)[4];
+						newArticle.video.video_type = 'vimeo';
+						newArticle.video.id = vimeoRegex().exec(req.body.video_url)[4];
+						newArticle.video.url = req.body.video_url;
 						callback(null, {})
 					}else{
-						return callback({message: 'Please Enter a Valid Youtube or Vimeo Video URL'})
+						return callback({success: false, msg: 'Please Enter a Valid Youtube or Vimeo Video URL'})
 					}
 				}else if(req.body.type.value == 'review'){
-					if(req.body.score > 5){
-						return callback({message: 'Please Choose a Score Between 0 and 5'});
+					if(req.body.score > 5 || req.body.score < 1){
+						return callback({success: false, msg: 'Please Choose a Score Between 1 and 5'});
 					}else{
+						if(!_.isEmpty(req.body.video_url)){
+							if(youtubeUrl.valid(req.body.video_url)){
+								newArticle.video.video_type = 'youtube';
+								newArticle.video.id = youtubeUrl.extractId(req.body.video_url);
+								newArticle.video.url = req.body.video_url;
+								callback(null, {})
+							}else if(vimeoRegex().test(req.body.video_url)){
+								newArticle.video.video_type = 'vimeo';
+								newArticle.video.id = vimeoRegex().exec(req.body.video_url)[4];
+								newArticle.video.url = req.body.video_url;
+								callback(null, {})
+							}else{
+								return callback({success: false, msg: 'Please Enter a Valid Youtube or Vimeo Video URL'})
+							}
+						}
 						newArticle.score = req.body.score;
 						callback(null, {})
 					}
@@ -115,7 +135,7 @@ module.exports = function(app){
 					newArticle.gallery = [];
 					async.each(req.body.gallery, function(item, gallery_callback){
 						Cloudinary.v2.uploader.upload('data:' + item.filetype + ';base64,' + item.base64, function(err, cl_res){
-							if(err){return gallery_callback({message: 'There Was An Error Uploading An Image To Gallery'})}
+							if(err){return gallery_callback({success: false, msg: 'There Was An Error Uploading An Image To Gallery'})}
 							newArticle.gallery.push(cl_res);
 							gallery_callback(null, {})
 						});
@@ -129,7 +149,7 @@ module.exports = function(app){
 			},
 			function(callback){
 				Cloudinary.v2.uploader.upload('data:' + req.body.hero_image.filetype + ';base64,' + req.body.hero_image.base64, function(err, cl_res){
-					if(err){return callback({message: 'There Was a Problem Saving Hero Image'})}
+					if(err){return callback({success: false, msg: 'There Was a Problem Saving Hero Image'})}
 					newArticle.hero_image = cl_res;
 					callback(null, {})
 				})
@@ -137,13 +157,12 @@ module.exports = function(app){
 			function(callback){
 				newArticle.save(function(err, article){
 					if(err) return callback(err);
-					callback(null, article)
+					callback(null, {success: true, mgs: 'Succesfully Submitted Article'})
 				})
 			}
-		], function(err, result){
-			console.log(err)
-			if(err){return res.json({success: false, msg: err.message})}
-			return res.json({success: true, msg: 'Successfully Submitted Article'});
+		], function(err, succ){
+			if(err){return res.json(err)}
+			res.json(succ);
 		})
 	})
 
@@ -165,15 +184,15 @@ module.exports = function(app){
 		async.series([
 			function(callback){
 				if(val.isNull(req.body.title) || !val.isLength(req.body.title, {min: 10, max: 100})){
-					return callback({message: 'Title Must Be Between 15 and 100 Characters Long'})
+					return callback({success: false, msg: 'Title Must Be Between 15 and 100 Characters Long'})
 				}if(val.isNull(req.body.description) || !val.isLength(req.body.description, {min: 5, max: 50})){
-					return callback({message: 'Description Must Be Between 5 and 50 Characters Long'})
+					return callback({success: false, msg: 'Description Must Be Between 5 and 50 Characters Long'})
 				}else if(req.body.tags.length == 0 || req.body.tags.length > 5){
-					return callback({message: 'Please Choose Up To 5 Tags'})
+					return callback({success: false, msg: 'Please Choose Up To 5 Tags'})
 				}else if(val.isNull(req.body.content)){
-					return callback({message: 'Content Cannot Be Empty'});
+					return callback({success: false, msg: 'Content Cannot Be Empty'});
 				}else if(!val.isIn(req.body.type.value, ['news', 'deal', 'video', 'review', 'podcast'])){
-					return callback({message: 'Please Choose A Type (news, deal, video, review, podcast)'});
+					return callback({success: false, msg: 'Please Choose A Type (news, deal, video, review, podcast)'});
 				}else{
 					callback(null, null)
 				}
@@ -226,6 +245,27 @@ module.exports = function(app){
 			},
 			function(callback){
 				updateArticle.$pushAll = {gallery: new_gallery_images};
+				if(req.body.type.value == 'review'){
+					updateArticle.score = req.body.score;
+					if(!_.isEmpty(req.body.video.url)){
+						if(youtubeUrl.valid(req.body.video.url)){
+							updateArticle.video = {};
+							updateArticle.video.video_type = 'youtube';
+							updateArticle.video.id = youtubeUrl.extractId(req.body.video.url);
+							updateArticle.video.url = req.body.video.url;
+						}else if(vimeoRegex().test(req.body.video.url)){
+							updateArticle.video = {};
+							updateArticle.video.video_type = 'vimeo';
+							updateArticle.video.id = vimeoRegex().exec(req.body.video.url)[4];
+							updateArticle.video.url = req.body.video.url;
+						}else{
+							return callback({success: false, msg: 'Please Enter a Valid Youtube or Vimeo Video URL'})
+						}
+					}else{
+						updateArticle.video = {};
+					}
+				}
+				
 				Article.findOneAndUpdate(req.body._id, updateArticle, function(err, article){
 					if(err){throw err;}
 					if(article){
@@ -246,11 +286,39 @@ module.exports = function(app){
 
 	router.delete('/:id', function(req, res){
 		Article.findOneAndRemove({_id: req.params.id}, function(err, article){
+			console.log(article)
 			if(err){console.log(err)}
-			if(!article){return res.status(500).json({message: 'There Was an Error Removing This Article'})}
-			Cloudinary.v2.uploader.destroy(article.hero_image.public_id, function(err, cl_res){
-				if(err){return res.status(500).json(err)}
-				return res.status(201).json({message: 'Removed Article: ' + article.title});
+			if(!article){return res.status(500).json({success: false, msg: 'There Was an Error Removing This Article'})}
+			async.series([
+				function(callback){
+					Cloudinary.v2.uploader.destroy(article.hero_image.public_id, function(err, cl_res){
+						if(err){return callback({success: false, msg: 'There Was an Error Removing This Article\'s Hero Image'})}
+						return callback(null,  null)
+					})
+				},
+				function(callback){
+					if(_.isEmpty(article.gallery)){
+						return callback(null, null)
+					}
+					async.each(article.gallery, function(item, gallery_callback){
+						Cloudinary.v2.uploader.destroy(item.public_id, function(err, cl_res){
+							if(err){return gallery_callback({success: false, msg: 'There Was an Error Removing This Article\'s Hero Image'})}
+							return gallery_callback(null,  null)
+						})
+					}, function(err, succ){
+						if(err){
+							return callback(err);
+						}else{
+							return callback(null, null)
+						}
+					})
+				}
+			], function(err, succ){
+				if(err){
+					return res.json(err);
+				}else{
+					return res.json({success: true, msg: 'Article Removed'});
+				}
 			})
 		})
 	});

@@ -26,9 +26,21 @@
 	        dropdown-onchange="order(selected)">
 	    	</div>
 		</div>
+		<div class="review side-row" ng-if="post.type.value == 'video' || post.type.value == 'review'">
+			<p class="module-name">Review</p>
+			<ul style="margin: 0; padding: 10px;">
+				<li ng-repeat="item in stars" style="display: inline-block; cursor: pointer;" ng-click="setRating($index + 1)">
+					<img src="/images/fire.png" alt="" width="25" ng-style="item.selected == false && {'-webkit-filter': 'grayscale(100%)', 'filter': 'grayscale(100%)'}">
+				</li>
+			</ul>
+		</div>
+		<div class="video side-row" ng-if="post.type.value == 'video' || post.type.value == 'review'">
+			<p class="module-name">Video</p>
+			<input type="text" placeholder="Youtube or Vimeo Video URL" ng-model="post.video.url" style="width: 100%;"/>
+		</div>
 		<div class="tags side-row">
 			<p class="module-name">Tags</p>
-			<tags-input ng-model="post.tags"></tags-input>
+			<tags-input ng-model="post.tags" replace-spaces-with-dashes="false"></tags-input>
 		</div>
 		<div class="game side-row">
 			<p class="module-name"><span>Game</span><span class="game-name">{{post.game.name}}</span></p>

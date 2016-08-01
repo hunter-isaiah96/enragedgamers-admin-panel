@@ -18,8 +18,7 @@ var ArticleSchema = new Schema({
 		text: {type: String, required: true},
 		value: {type: String, required: true}
 	}, default: '', required: true},
-	video_type: {type: String, default: '', required: false},
-	video_id: {type: String, default: '', required: false},
+	video: {type: {video_type: {type: String, required: true}, id: {type: String, required: true}, url: {type: String, required: true}}, default: {}, required: false},
 	score: {type: Number, default: '', required: false},
 	hero_image: {type:{
 		public_id: {type: String, required: true},

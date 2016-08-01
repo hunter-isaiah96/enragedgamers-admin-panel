@@ -1,5 +1,5 @@
 var app = angular.module('EGAP', ['ui.router', 'ngDropdowns', 'angular-quill', 'ngTagsInput', 'naif.base64', 
-	'wu.masonry', 'ui.sortable', 'checklist-model', '720kb.datepicker', 'angular-flatpickr']);
+	'wu.masonry', 'ui.sortable', 'checklist-model', '720kb.datepicker', 'angular-flatpickr', 'angular-repeat-n']);
 
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$stateProvider
@@ -127,7 +127,7 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 	$scope.games = [];
 	$scope.game_search = '';
 	$scope.post = {title: '', game: null, featured: false, description: 'Default Test', content: '', type: '', 
-	tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter'};
+	tags: [], hero_image: null, gallery: [], author: 'Isaiah Hunter', video_url: '', score: 0};
 	$scope.categories = [
         {
             text: 'News',
@@ -143,12 +143,20 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
         },
         {
             text: 'Podcasts',
-            value: 'podcasts',
+            value: 'podcast',
         },
         {
-            text: 'Reviews',
-            value: 'reviews',
+            text: 'Review',
+            value: 'review',
         }
+    ];
+
+    $scope.stars = [
+    	{selected: false},
+    	{selected: false},
+    	{selected: false},
+    	{selected: false},
+    	{selected: false}
     ];
 
 	$scope.post.type = $scope.categories[0];
@@ -163,10 +171,9 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 		Games.findGames($scope.game_search)
 		.then(function(result){
 			$scope.games = result;
-			console.log($scope.games)
 		})
 	};
-	
+
 	$scope.publishArticle = function(){
 		AppService.createPost($scope.post)
 		.then(function(result){
@@ -184,6 +191,20 @@ app.controller('NewPostController', function($scope, $state, AppService, Games, 
 
     $scope.removeFromGallery = function(index){
         $scope.post.gallery.splice(index, 1);
+    };
+
+    $scope.getArray = function(number){
+    	return new Array(number);
+    };
+
+    $scope.setRating = function(rating){
+    	for(var i = 0; i < $scope.stars.length; i++){
+    		$scope.stars[i].selected = false;
+    	};
+    	for(var i = 0; i < (rating); i++){
+    		$scope.stars[i].selected = true;
+    	};
+    	$scope.post.score = rating;
     };
 });
 
@@ -214,6 +235,14 @@ app.controller('EditPostController', function($scope, Games, AppService, $stateP
         }
     ];
 
+    $scope.stars = [
+    	{selected: false},
+    	{selected: false},
+    	{selected: false},
+    	{selected: false},
+    	{selected: false}
+    ];
+
     $scope.selectGame = function(index){
 		$scope.post.game = $scope.games[index];
 		$scope.games = [];
@@ -233,6 +262,12 @@ app.controller('EditPostController', function($scope, Games, AppService, $stateP
     		$scope.post = result.post;
     		$scope.post.new_gallery = [];
     		$scope.post.removed_images = {ids: [], public_ids: []}
+    		if(result.post.type.value == 'review'){
+    			for(var i = 0; i < result.post.score; i++){
+    				$scope.stars[i].selected = true;
+    			};
+    		}
+    		
     	}else{
     		alert(result.msg)
     	}
@@ -246,7 +281,7 @@ app.controller('EditPostController', function($scope, Games, AppService, $stateP
     		}else{
 				alert(result.msg)
     		}
-    	})
+    	});
     };
 
     $scope.addToNewGallery = function(file, base64_encode){
@@ -261,6 +296,16 @@ app.controller('EditPostController', function($scope, Games, AppService, $stateP
 
     $scope.removeFromNewGallery = function(index){
         $scope.post.new_gallery.splice(index, 1);
+    };
+
+    $scope.setRating = function(rating){
+    	for(var i = 0; i < $scope.stars.length; i++){
+    		$scope.stars[i].selected = false;
+    	};
+    	for(var i = 0; i < (rating); i++){
+    		$scope.stars[i].selected = true;
+    	};
+    	$scope.post.score = rating;
     };
 
 });
